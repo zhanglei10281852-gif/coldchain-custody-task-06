@@ -84,15 +84,6 @@ func (b *SampleBatch) Transition(to SampleState, now time.Time) error {
 	return nil
 }
 
-func (b *SampleBatch) ApplyArrival(now time.Time) {
-	if b.State == SampleDestroyed || b.State == SampleReleased {
-		return
-	}
-	b.State = SampleReceived
-	b.UpdatedAt = now.UTC()
-	b.QuarantineNote = ""
-}
-
 func (b SampleBatch) Clone() SampleBatch { return b }
 
 func (b SampleBatch) IsUsableAt(at time.Time) bool {

@@ -256,9 +256,10 @@ func (s *PlanningService) transitionAny(ctx context.Context, shipmentID string, 
 					return err
 				}
 			case domain.ShipmentArrived:
-				batch.ApplyArrival(now)
-				if batch.State != domain.SampleReceived {
-					continue
+				if batch.State != domain.SampleQuarantined && batch.State != domain.SampleDestroyed && batch.State != domain.SampleReleased {
+					if err := batch.Transition(domain.SampleReceived, now); err != nil {
+						return err
+					}
 				}
 			case domain.ShipmentClosed:
 				if batch.State != domain.SampleReleased && batch.State != domain.SampleDestroyed && batch.State != domain.SampleReceived {
